@@ -13,51 +13,47 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+
+
 public class activity6 {
-	
-	WebDriver driver;
-	WebDriverWait wait;
-	
-	@BeforeClass
-	public void setUp() {
-		
-		driver = new FirefoxDriver();
-		wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-		
-		driver.get("https://training-support.net/webelements/login-form/");
-		
-		
-	}
-	
-	@Test
-	@Parameters ({"UserName","Password"})
-	public void loginTest(String UserName, String Password) {
-		
-		String actualMsg = "Welcome Back, Admin!";
-		
-        WebElement username = driver.findElement(By.id("username"));
-    	
-        WebElement password = driver.findElement(By.id("password"));
-	
-        username.sendKeys(UserName);
-        password.sendKeys(Password);
+    WebDriver driver;
+    WebDriverWait wait;
+
+    @BeforeClass
+    public void beforeClass() {
+        // Initialize the Firefox driver
+        driver = new FirefoxDriver();
+        // Initialize the wait object
+         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+       
         
-        driver.findElement(By.xpath("//button[text()='Submit']")).click();
-	
-        String expectedMsg = driver.findElement(By.cssSelector("h2.text-center")).getText();
-	
-        Assert.assertEquals(actualMsg, expectedMsg);
-	
+        //Open browser
+        driver.get("https://v1.training-support.net/selenium/login-form");
     }
-	
-	
-	
-	@AfterClass
-	public void tearDown() {
-		
-		driver.quit();
-		
-	}
-	
+    
+    @Test
+    @Parameters({"username", "password"})
+    public void loginTestCase(String username, String password) {
+        //Find username and pasword fields
+        WebElement usernameField = driver.findElement(By.id("username"));
+        WebElement passwordField = driver.findElement(By.id("password"));
+        
+        //Enter values
+        usernameField.sendKeys(username);
+        passwordField.sendKeys(password);
+        
+        //Click Log in
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+        
+        //Assert Message
+        String loginMessage = driver.findElement(By.id("action-confirmation")).getText();
+        Assert.assertEquals(loginMessage, "Welcome Back, admin");
+    }
+
+    @AfterClass
+    public void afterClass() {
+        //Close browser
+        driver.close();
+    }
 
 }
